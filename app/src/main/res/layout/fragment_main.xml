@@ -1,0 +1,31 @@
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:orientation="vertical"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp" tools:context=".MainActivityFragment">
+
+    <TextView android:text="views!" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/scrollButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Go to scroll view"
+        android:onClick="launchScroll"/>
+    <Button
+        android:id="@+id/listButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Go to list view"
+        android:onClick="launchList"/>
+    <Button
+        android:id="@+id/recyclerButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Go to recycler view"
+        android:onClick="launchRecycler"/>
+
+</LinearLayout>
