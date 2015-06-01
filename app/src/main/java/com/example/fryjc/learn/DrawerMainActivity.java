@@ -12,7 +12,7 @@ import android.widget.ListView;
 /**
  * Created by fryjc on 5/27/2015.
  */
-public class DrawerMain extends ActionBarActivity {
+public class DrawerMainActivity extends ActionBarActivity{
     private FragmentNavigationDrawer dlDrawer;
 
     @Override
@@ -20,8 +20,11 @@ public class DrawerMain extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
 
         dlDrawer = (FragmentNavigationDrawer) findViewById(R.id.drawer_layout);
         dlDrawer.setupDrawerConfiguration((ListView) findViewById(R.id.lvDrawer), toolbar,
@@ -47,6 +50,7 @@ public class DrawerMain extends ActionBarActivity {
         MenuInflater inflater = getMenuInflater();
         return super.onCreateOptionsMenu(menu);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
