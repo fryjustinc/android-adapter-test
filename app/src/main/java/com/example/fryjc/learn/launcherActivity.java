@@ -16,7 +16,7 @@ public class launcherActivity extends Activity {
         new Handler().postDelayed(new Runnable() {
                                      @Override
                                      public void run() {
-                                        startActivity(new Intent(launcherActivity.this, DrawerMain.class));
+                                        startActivity(new Intent(launcherActivity.this, DrawerMainActivity.class));
                                          finish();
                                      }
                                  }

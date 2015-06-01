@@ -28,27 +28,20 @@ public class PictureFragment extends Fragment
         @Override
         public void onClick(View v) {
             Intent picMessageIntent = new Intent(Intent.ACTION_SEND);
-            picMessageIntent.setType("image/bmp");
+            picMessageIntent.setType("image/jpg");
             picMessageIntent.putExtra(Intent.EXTRA_STREAM, imageBitmap);
             startActivity(picMessageIntent);
         }
     };
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
+    public View onCreateView(LayoutInflater inf, ViewGroup parent, Bundle savedInstanceState) {
+        View v =  inf.inflate(R.layout.picture_fragment, parent, false);
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, 1);
         }
-        Button clickButton = (Button) getActivity().findViewById(R.id.btnSendImage);
+        Button clickButton = (Button) v.findViewById(R.id.btnSendImage);
         clickButton.setOnClickListener(mOnClickListener);
-    }
-    public View onCreateView(LayoutInflater inf, ViewGroup parent, Bundle savedInstanceState) {
-        View v =  inf.inflate(R.layout.picture_fragment, parent, false);
-
         return v;
 
     }

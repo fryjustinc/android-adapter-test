@@ -15,8 +15,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+
+import com.example.fryjc.learn.adapter.RecyclerAdapter;
+import com.example.fryjc.learn.models.ContactCard;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.ArrayList;
 
 
 public class ListFragment extends android.support.v4.app.Fragment {
@@ -24,45 +32,18 @@ public class ListFragment extends android.support.v4.app.Fragment {
     ListView listContacts;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        listContacts = (ListView)getView().findViewById(R.id.contactlist);
-
-        Uri queryUri = ContactsContract.Contacts.CONTENT_URI;
-
-        String[] projection = new String[] {
-                ContactsContract.Contacts._ID,
-                ContactsContract.Contacts.DISPLAY_NAME};
-
-        String selection = ContactsContract.Contacts.DISPLAY_NAME + " IS NOT NULL";
-
-        CursorLoader cursorLoader = new CursorLoader(
-                getActivity(),
-                queryUri,
-                projection,
-                selection,
-                null,
-                null);
-
-        Cursor cursor = cursorLoader.loadInBackground();
-
-        String[] from = {ContactsContract.Contacts.DISPLAY_NAME};
-        int[] to = {android.R.id.text1};
-
-        ListAdapter adapter = new SimpleCursorAdapter(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                cursor,
-                from,
-                to,
-                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-        listContacts.setAdapter(adapter);
-
-    }
     public View onCreateView(LayoutInflater inf, ViewGroup parent, Bundle savedInstanceState) {
-        View v =  inf.inflate(R.layout.activitylist, parent, false);
+        View v = inf.inflate(R.layout.activitylist, parent, false);
+        listContacts = (ListView) v.findViewById(R.id.contactlist);
+        String serializedValue = getArguments().getString(FragmentNavigationDrawer.contactBundleKey);
+        Gson gson = new Gson();
+        ArrayList<ContactCard> mContactList = gson.fromJson(serializedValue,new TypeToken<ArrayList<ContactCard>>(){}.getType());
+        com.example.fryjc.learn.adapter.ListAdapter adapter = new com.example.fryjc.learn.adapter.ListAdapter(getActivity(), mContactList,
+                (com.example.fryjc.learn.adapter.ListAdapter.iCall) getActivity());
+        listContacts.setAdapter(adapter);
         return v;
     }
+
+
 
 }

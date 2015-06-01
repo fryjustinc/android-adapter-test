@@ -16,15 +16,18 @@ import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.fryjc.learn.adapter.NavDrawerListAdapter;
+import com.example.fryjc.learn.models.ContactCard;
 import com.example.fryjc.learn.models.NavDrawerItem;
+import com.example.fryjc.learn.viewmodel.FragmentDrawerViewModel;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class FragmentNavigationDrawer extends DrawerLayout {
+public class FragmentNavigationDrawer extends DrawerLayout{
     private ActionBarDrawerToggle drawerToggle;
     private ListView lvDrawer;
     private Toolbar toolbar;
@@ -32,6 +35,8 @@ public class FragmentNavigationDrawer extends DrawerLayout {
     private ArrayList<NavDrawerItem> navDrawerItems;
     private ArrayList<FragmentNavItem> drawerNavItems;
     private int drawerContainerRes;
+    private FragmentDrawerViewModel mViewModel;
+    public static final String contactBundleKey = "123";
 
     public FragmentNavigationDrawer(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -50,6 +55,7 @@ public class FragmentNavigationDrawer extends DrawerLayout {
         drawerNavItems = new ArrayList<FragmentNavigationDrawer.FragmentNavItem>();
         navDrawerItems = new ArrayList<NavDrawerItem>();
         drawerContainerRes = drawerContainerResId;
+        mViewModel = new FragmentDrawerViewModel(getActivity());
         lvDrawer = drawerListView;
         toolbar = drawerToolbar;
         lvDrawer.setOnItemClickListener(new FragmentDrawerItemListener());
@@ -70,24 +76,42 @@ public class FragmentNavigationDrawer extends DrawerLayout {
     /**
      * Swaps fragments in the main content view
      */
-    public void selectDrawerItem(int position) {
-        FragmentNavItem navItem = drawerNavItems.get(position);
+    public void selectDrawerItem(final int position) {
+        final FragmentNavItem navItem = drawerNavItems.get(position);
         Fragment fragment = null;
         try {
             fragment = navItem.getFragmentClass().newInstance();
-            Bundle args = navItem.getFragmentArgs();
-            if (args != null) {
-                fragment.setArguments(args);
-            }
+
+            final Fragment finalFragment = fragment;
+            mViewModel.getContacts(new FragmentDrawerViewModel.IReturnListener() {
+                @Override
+                public void onReturn(List<ContactCard> contacts) {
+                    Bundle args = navItem.getFragmentArgs();
+                    if (args != null) {
+                        finalFragment.setArguments(args);
+                    }
+
+                    if (args == null) {
+                        args = new Bundle();
+                    }
+                    Gson gson = new Gson();
+                    String serialized = gson.toJson(contacts);
+                    args.putString(contactBundleKey, serialized);
+                    finalFragment.setArguments(args);
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(drawerContainerRes, finalFragment).commit();
+
+
+                    lvDrawer.setItemChecked(position, true);
+                    setTitle(navItem.getTitle());
+                }
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(drawerContainerRes, fragment).commit();
 
-        lvDrawer.setItemChecked(position, true);
-        setTitle(navItem.getTitle());
         closeDrawer(lvDrawer);
     }
 
@@ -151,4 +175,5 @@ public class FragmentNavigationDrawer extends DrawerLayout {
     public boolean isDrawerOpen() {
         return isDrawerOpen(lvDrawer);
     }
+
 }

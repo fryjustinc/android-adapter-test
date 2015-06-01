@@ -7,7 +7,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.fryjc.learn.DrawerMain;
 import com.example.fryjc.learn.models.ContactCard;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -19,15 +18,17 @@ import java.util.List;
  */
 public class FragmentDrawerViewModel {
     private Context mContext;
+    RequestQueue mQueue;
     //I think a StringRequest is more convenient in your case cause you can
     //make a new JSONArray straight from the String
 
     public FragmentDrawerViewModel(Context myContext){
         mContext = myContext;
+        mQueue = Volley.newRequestQueue(mContext);
     }
 
 
-    RequestQueue queue = Volley.newRequestQueue(mContext);
+
     //This will send the request
 
 
@@ -48,7 +49,7 @@ public class FragmentDrawerViewModel {
             }
         });
 
-        queue.add(request);
+        mQueue.add(request);
     }
 
     public static interface IReturnListener{
