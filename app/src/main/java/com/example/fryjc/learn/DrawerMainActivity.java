@@ -1,16 +1,25 @@
 package com.example.fryjc.learn;
 
+import android.app.Dialog;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
@@ -18,6 +27,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.fryjc.learn.adapter.ContactCardViewHolder;
 import com.example.fryjc.learn.adapter.ListAdapter;
 import com.example.fryjc.learn.models.ContactCard;
+import com.example.fryjc.learn.models.PhoneNumber;
 
 /**
  * Created by fryjc on 5/27/2015.
@@ -30,7 +40,6 @@ public class DrawerMainActivity extends ActionBarActivity implements ListAdapter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_main);
         mFrame = (FrameLayout) this.findViewById(R.id.popup);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -86,13 +95,35 @@ public class DrawerMainActivity extends ActionBarActivity implements ListAdapter
 
     @Override
     public void onClick(ContactCard card) {
-        View cardView = LayoutInflater.from(this).inflate(R.layout.contactcardview, mFrame, true);
-        ContactCardViewHolder holder = new ContactCardViewHolder(cardView);
-        RequestQueue requestQueue = Volley.newRequestQueue(holder.holderImage.getContext());
+//        View cardView = LayoutInflater.from(this).inflate(R.layout.contactcardview, mFrame, true);
+//        ContactCardViewHolder holder = new ContactCardViewHolder(cardView);
+//        RequestQueue requestQueue = Volley.newRequestQueue(holder.holderImage.getContext());
+//        ImageLoader imageLoad = new ImageLoader(requestQueue, new LruBitmapCache(4000));
+//        holder.holderImage.setImageUrl(card.getmSmallImageURL(), imageLoad);
+//        holder.userName.setText(card.getmName());
+//        String phone = card.getmPhone().getmHome();
+//        mFrame.setVisibility(View.VISIBLE);
+        // custom dialog
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.custom_popup);
+        dialog.setTitle(card.getmName());
+        RequestQueue requestQueue = Volley.newRequestQueue(dialog.getContext());
         ImageLoader imageLoad = new ImageLoader(requestQueue, new LruBitmapCache(4000));
-        holder.holderImage.setImageUrl(card.getmSmallImageURL(), imageLoad);
-        holder.userName.setText(card.getmName());
-        String phone = card.getmPhone().getmHome();
-        mFrame.setVisibility(View.VISIBLE);
+        // set the custom dialog components - text, image and button
+        TextView text = (TextView) dialog.findViewById(R.id.text);
+        text.setText(card.getmPhone().getmHome());
+        com.android.volley.toolbox.NetworkImageView image = (com.android.volley.toolbox.NetworkImageView) dialog.findViewById(R.id.image);
+        image.setImageUrl(card.getmSmallImageURL(), imageLoad);
+
+        Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+        // if button is clicked, close the custom dialog
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 }

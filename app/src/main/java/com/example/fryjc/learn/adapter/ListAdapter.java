@@ -1,9 +1,6 @@
 package com.example.fryjc.learn.adapter;
 
 import android.app.Activity;
-import android.app.DownloadManager;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +26,7 @@ public class ListAdapter extends ArrayAdapter<ContactCard> {
     private iCall mCallBack;
 
     public ListAdapter(Activity context, ArrayList<ContactCard> list, iCall callBack) {
-        super(context, R.layout.activitylist, list);
+        super(context, R.layout.list_fragment, list);
         mContext = context;
         mCallBack = callBack;
     }
@@ -41,7 +38,7 @@ public class ListAdapter extends ArrayAdapter<ContactCard> {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contactcardview, parent, false);
         ContactCardViewHolder holder = new ContactCardViewHolder(view);
         mRequestQueue = Volley.newRequestQueue(holder.holderImage.getContext());
-        ImageLoader imageLoad = new ImageLoader(mRequestQueue, new LruBitmapCache(4000));
+        ImageLoader imageLoad = new ImageLoader(mRequestQueue, new LruBitmapCache(8000));
         holder.holderImage.setImageUrl(getItem(position).getmSmallImageURL(), imageLoad);
         holder.userName.setText(getItem(position).getmName());
         String phone = getItem(position).getmPhone().getmHome();
